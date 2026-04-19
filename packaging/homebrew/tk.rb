@@ -21,7 +21,6 @@ class Tk < Formula
   def install
     system "cargo", "install", *std_cargo_args
     (pkgshare/"skills").install buildpath/"skills/tk-task-list"
-    (pkgshare/"skills").install buildpath/".agents/skills/tk-release"
   end
 
   def caveats
@@ -32,15 +31,12 @@ class Tk < Formula
 
       Install from the packaged skill files with npx skills:
         npx -y skills add "#{skill_path}" --skill tk-task-list -y --copy
-        npx -y skills add "#{skill_path}" --skill tk-release -y --copy
 
       Install from the repository with npx skills:
         npx -y skills add https://github.com/mkusaka/tk --skill tk-task-list -y
-        npx -y skills add https://github.com/mkusaka/tk --skill tk-release -y
 
       Install from GitHub CLI v2.90.0+:
         gh skill install mkusaka/tk tk-task-list
-        gh skill install mkusaka/tk tk-release
 
       Add `--agent <host>` if you want to target a specific agent host.
     EOS
