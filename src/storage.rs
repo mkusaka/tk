@@ -94,6 +94,7 @@ impl ListLock {
             .map_err(|err| TkError::storage(format!("failed to create list directory: {err}")))?;
         let file = OpenOptions::new()
             .create(true)
+            .truncate(false)
             .read(true)
             .write(true)
             .open(&paths.lock_path)
@@ -932,7 +933,7 @@ impl ListStore {
             ));
         }
         for task_id in &touched {
-            let task = ensure_task_exists_mut(&mut after.tasks, &task_id)?;
+            let task = ensure_task_exists_mut(&mut after.tasks, task_id)?;
             task.blocks.sort_by_key(|id| numeric_id(id));
             task.blocks.dedup();
             task.blocked_by.sort_by_key(|id| numeric_id(id));
