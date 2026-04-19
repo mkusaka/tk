@@ -1,0 +1,4 @@
+interface:
+  display_name: "TK Release"
+  short_description: "Release tk with Homebrew publishing"
+  default_prompt: "Use $tk-release to cut a tk release and publish it through the Homebrew automation."
