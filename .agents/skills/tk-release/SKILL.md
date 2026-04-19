@@ -64,11 +64,11 @@ If `CI` fails, fix the issue, commit, push again, and re-watch until green.
 Once `main` is green:
 
 ```bash
-git tag v0.0.1
-git push origin v0.0.1
+git tag vX.Y.Z
+git push origin vX.Y.Z
 ```
 
-Replace `0.0.1` with the actual target version. Never hard-code the example version without checking `Cargo.toml`.
+Replace `X.Y.Z` with the actual target version. Never hard-code the example version without checking `Cargo.toml`.
 
 ### 5. Watch the release workflow
 
@@ -102,8 +102,8 @@ Do not report success until all of the following are true:
 Useful verification commands:
 
 ```bash
-gh release view v0.0.1
-gh release view v0.0.1 --json isDraft,tagName,url
+gh release view vX.Y.Z
+gh release view vX.Y.Z --json isDraft,tagName,url
 gh api repos/mkusaka/homebrew-tap/contents/Formula/tk.rb --jq '.download_url'
 curl -L "$(gh api repos/mkusaka/homebrew-tap/contents/Formula/tk.rb --jq '.download_url')"
 ```

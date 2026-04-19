@@ -91,6 +91,6 @@ updates `mkusaka/homebrew-tap` directly. The workflow requires the
 `HOMEBREW_TAP_TOKEN` repository secret.
 
 ```bash
-git tag v0.0.1
-git push origin v0.0.1
+git tag vX.Y.Z
+git push origin vX.Y.Z
 ```
