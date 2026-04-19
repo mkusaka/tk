@@ -30,15 +30,19 @@ class Tk < Formula
       Optional agent skills were installed to:
         #{skill_path}
 
-      Install with npx skills:
-        npx -y skills add "#{skill_path}" --skill tk-task-list --agent codex -y --copy
-        npx -y skills add "#{skill_path}" --skill tk-release --agent codex -y --copy
+      Install from the packaged skill files with npx skills:
+        npx -y skills add "#{skill_path}" --skill tk-task-list -y --copy
+        npx -y skills add "#{skill_path}" --skill tk-release -y --copy
+
+      Install from the repository with npx skills:
+        npx -y skills add https://github.com/mkusaka/tk --skill tk-task-list -y
+        npx -y skills add https://github.com/mkusaka/tk --skill tk-release -y
 
       Install from GitHub CLI v2.90.0+:
-        gh skill install mkusaka/tk tk-task-list --agent codex
-        gh skill install mkusaka/tk tk-release --agent codex
+        gh skill install mkusaka/tk tk-task-list
+        gh skill install mkusaka/tk tk-release
 
-      Replace `--agent codex` with `--agent claude-code` if needed.
+      Add `--agent <host>` if you want to target a specific agent host.
     EOS
   end
 

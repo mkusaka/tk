@@ -35,26 +35,26 @@ This repository ships two optional skills:
 Install from a local checkout with `npx skills add`:
 
 ```bash
-npx -y skills add "$PWD" --skill tk-task-list --agent codex -y --copy
-npx -y skills add "$PWD" --skill tk-release --agent codex -y --copy
+npx -y skills add "$PWD" --skill tk-task-list -y --copy
+npx -y skills add "$PWD" --skill tk-release -y --copy
 ```
 
 Install from GitHub with `npx skills add`:
 
 ```bash
-npx -y skills add https://github.com/mkusaka/tk --skill tk-task-list --agent codex -y
-npx -y skills add https://github.com/mkusaka/tk --skill tk-release --agent codex -y
+npx -y skills add https://github.com/mkusaka/tk --skill tk-task-list -y
+npx -y skills add https://github.com/mkusaka/tk --skill tk-release -y
 ```
 
 Install with GitHub CLI `gh skill` (requires GitHub CLI v2.90.0+):
 
 ```bash
-gh skill install mkusaka/tk tk-task-list --agent codex
-gh skill install mkusaka/tk tk-release --agent codex
+gh skill install mkusaka/tk tk-task-list
+gh skill install mkusaka/tk tk-release
 ```
 
-Replace `--agent codex` with `--agent claude-code` when installing for Claude
-Code.
+Add `--agent <host>` if you want to target a specific agent host such as
+`claude-code` or `codex`.
 
 ## Status
 
