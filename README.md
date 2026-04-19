@@ -25,6 +25,37 @@ Install from a local checkout:
 cargo install --path . --force
 ```
 
+## Agent Skills
+
+This repository ships two optional skills:
+
+- `tk-task-list`
+- `tk-release`
+
+Install from a local checkout with `npx skills add`:
+
+```bash
+npx -y skills add "$PWD" --skill tk-task-list --agent codex -y --copy
+npx -y skills add "$PWD" --skill tk-release --agent codex -y --copy
+```
+
+Install from GitHub with `npx skills add`:
+
+```bash
+npx -y skills add https://github.com/mkusaka/tk --skill tk-task-list --agent codex -y
+npx -y skills add https://github.com/mkusaka/tk --skill tk-release --agent codex -y
+```
+
+Install with GitHub CLI `gh skill` (requires GitHub CLI v2.90.0+):
+
+```bash
+gh skill install mkusaka/tk tk-task-list --agent codex
+gh skill install mkusaka/tk tk-release --agent codex
+```
+
+Replace `--agent codex` with `--agent claude-code` when installing for Claude
+Code.
+
 ## Status
 
 Early implementation based on [spec.md](./spec.md) and [spec.ja.md](./spec.ja.md).
