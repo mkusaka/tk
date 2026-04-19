@@ -548,7 +548,8 @@ JSON output では stable code を持つ diagnostic 一覧を返します。
 
 - 最初に full snapshot を出す
 - 続けて change event を流す
-- filesystem watch と polling fallback を併用
+- 可能なら filesystem notification を使う
+- watcher の初期化失敗や切断時は interval polling に fallback する
 - v1 では durable replay 契約は持たない best-effort stream
 
 event type:
@@ -618,9 +619,9 @@ event type:
 
 ## 16. Concurrency と atomicity
 
-- `create`, `next --claim`, `reset`, graph-wide delete は list-level lock を使う
-- 通常の single-task `update` は task-level lock を使ってよい
-- `claim --check-busy` は unresolved task 全体を見るため list-level lock 必須
+- v1 では全 mutation command が list-level lock を使う
+- `create`, `next --claim`, `reset`, graph-wide delete, `claim --check-busy` は list 全体の状態に依存するため list-level lock が必要
+- single-task `update` を task-level lock に細分化する余地はあるが、v1 では lock granularity より correctness を優先する
 - 全 write は以下を満たす
   1. current state を読む
   2. validate

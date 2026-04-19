@@ -548,7 +548,8 @@ Behavior:
 
 - start by emitting a full snapshot
 - continue emitting change events
-- use filesystem watch with polling fallback
+- use filesystem notifications when available
+- fall back to interval-based polling when watcher setup fails or disconnects
 - best-effort only; no durable replay contract in v1
 
 Event types:
@@ -618,9 +619,9 @@ Event types:
 
 ## 16. Concurrency and Atomicity
 
-- `create`, `next --claim`, `reset`, and graph-wide delete operations must use list-level locking.
-- ordinary single-task `update` may use task-level locking.
-- `claim --check-busy` must use list-level locking because it depends on scanning unresolved tasks.
+- v1 uses list-level locking for all mutating operations.
+- `create`, `next --claim`, `reset`, graph-wide delete, and `claim --check-busy` require list-level locking because they depend on whole-list state.
+- single-task `update` could move to task-level locking in a future release, but correctness takes priority over lock granularity in v1.
 - all writes must use:
   1. read current state
   2. validate

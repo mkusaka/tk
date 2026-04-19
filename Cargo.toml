@@ -2,10 +2,19 @@
 name = "tk"
 version = "0.1.0"
 edition = "2024"
+description = "Standalone Rust CLI for persistent structured task lists"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/mkusaka/tk"
+homepage = "https://github.com/mkusaka/tk"
+documentation = "https://github.com/mkusaka/tk"
+keywords = ["cli", "tasks", "todo", "agent", "workflow"]
+categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
 fs4 = "0.13.1"
+notify = "8.2.0"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 tempfile = "3.27.0"

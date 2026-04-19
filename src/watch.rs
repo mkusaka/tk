@@ -1,5 +1,6 @@
+use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use serde_json::json;
-use std::thread;
+use std::sync::mpsc::{self, RecvTimeoutError};
 use std::time::Duration;
 
 use crate::error::TkError;
@@ -11,6 +12,7 @@ pub fn watch_list(
     interval_ms: u64,
     include_internal: bool,
 ) -> Result<(), TkError> {
+    store.ensure_storage_dirs()?;
     let filters = ListFilters {
         statuses: Default::default(),
         owner: None,
@@ -31,8 +33,45 @@ pub fn watch_list(
         "tasks": task_map_json(&tasks),
     }))?;
 
+    let (tx, rx) = mpsc::channel::<notify::Result<Event>>();
+    let watcher = RecommendedWatcher::new(
+        move |result| {
+            let _ = tx.send(result);
+        },
+        Config::default(),
+    );
+
+    let mut event_driven = false;
+    let mut maybe_watcher = match watcher {
+        Ok(mut watcher) => {
+            if watcher
+                .watch(&store.paths.list_dir, RecursiveMode::Recursive)
+                .is_ok()
+            {
+                event_driven = true;
+                Some(watcher)
+            } else {
+                None
+            }
+        }
+        Err(_) => None,
+    };
+
     loop {
-        thread::sleep(Duration::from_millis(interval_ms.max(100)));
+        if event_driven {
+            match rx.recv_timeout(Duration::from_millis(interval_ms.max(100))) {
+                Ok(Ok(_event)) => {}
+                Ok(Err(_err)) => {}
+                Err(RecvTimeoutError::Timeout) => continue,
+                Err(RecvTimeoutError::Disconnected) => {
+                    maybe_watcher = None;
+                    event_driven = false;
+                    continue;
+                }
+            }
+        } else {
+            std::thread::sleep(Duration::from_millis(interval_ms.max(100)));
+        }
         let (manifest, tasks) = store.list_task_views(&filters)?;
         let current = task_view_map(&tasks);
 
@@ -103,5 +142,8 @@ pub fn watch_list(
 
         previous = current;
         previous_manifest_revision = manifest.list_revision;
+        if maybe_watcher.is_none() {
+            event_driven = false;
+        }
     }
 }

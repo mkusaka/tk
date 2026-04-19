@@ -544,6 +544,12 @@ impl ListStore {
         }
     }
 
+    pub fn ensure_storage_dirs(&self) -> Result<(), TkError> {
+        fs::create_dir_all(&self.paths.tasks_dir)
+            .map_err(|err| TkError::storage(format!("failed to create tasks directory: {err}")))?;
+        Ok(())
+    }
+
     pub fn list_task_views(
         &self,
         filters: &ListFilters,

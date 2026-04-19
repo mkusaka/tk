@@ -9,6 +9,7 @@ Early implementation based on [spec.md](./spec.md) and [spec.ja.md](./spec.ja.md
 ## Commands
 
 ```bash
+cargo install --path .
 cargo run -- init
 cargo run -- create "Implement parser"
 cargo run -- list --format json
