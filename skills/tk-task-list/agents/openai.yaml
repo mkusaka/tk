@@ -1,0 +1,4 @@
+interface:
+  display_name: "TK Task List"
+  short_description: "Use tk for persistent task tracking"
+  default_prompt: "Use $tk-task-list to manage this work with the tk CLI."
