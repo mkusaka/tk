@@ -141,6 +141,7 @@ pub struct Diagnostic {
     pub task_id: Option<String>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DiagnosticLevel {

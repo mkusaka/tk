@@ -1,6 +1,7 @@
 use serde_json::Value;
 use std::fmt::{Display, Formatter};
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ErrorCode {
     UsageError,

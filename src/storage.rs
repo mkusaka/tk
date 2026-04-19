@@ -544,11 +544,6 @@ impl ListStore {
         }
     }
 
-    pub fn manifest(&self) -> Result<Manifest, TkError> {
-        Ok(read_manifest(&self.paths.manifest_path)?
-            .unwrap_or_else(|| default_manifest(&self.paths)))
-    }
-
     pub fn list_task_views(
         &self,
         filters: &ListFilters,
@@ -709,6 +704,7 @@ impl ListStore {
         ensure_manifest(&self.paths, None, None)?;
         let before = load_state(&self.paths)?;
         let mut after = before.clone();
+        let mut changed = false;
 
         if check_busy {
             let busy = after.tasks.values().any(|task| {
@@ -760,17 +756,23 @@ impl ListStore {
                     ));
                 }
                 task.owner = Some(owner.to_owned());
-                bump_task(task);
+                changed = true;
             }
 
             if start && task.status == TaskStatus::Pending {
                 apply_status_update(task, TaskStatus::InProgress, false)?;
+                changed = true;
+            }
+
+            if changed {
                 bump_task(task);
             }
         }
 
-        bump_manifest(&mut after.manifest);
-        persist_state(&self.paths, &before, &after)?;
+        if changed {
+            bump_manifest(&mut after.manifest);
+            persist_state(&self.paths, &before, &after)?;
+        }
         let task = ensure_task_exists(&after.tasks, task_id)?;
         Ok((after.manifest, make_task_view(task, &after.tasks)))
     }
@@ -923,7 +925,7 @@ impl ListStore {
                 }),
             ));
         }
-        for task_id in touched {
+        for task_id in &touched {
             let task = ensure_task_exists_mut(&mut after.tasks, &task_id)?;
             task.blocks.sort_by_key(|id| numeric_id(id));
             task.blocks.dedup();
@@ -931,8 +933,10 @@ impl ListStore {
             task.blocked_by.dedup();
             bump_task(task);
         }
-        bump_manifest(&mut after.manifest);
-        persist_state(&self.paths, &before, &after)?;
+        if !touched.is_empty() {
+            bump_manifest(&mut after.manifest);
+            persist_state(&self.paths, &before, &after)?;
+        }
         let task = ensure_task_exists(&after.tasks, task_id)?;
         Ok((after.manifest, make_task_view(task, &after.tasks)))
     }
