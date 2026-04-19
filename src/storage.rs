@@ -423,19 +423,19 @@ fn bump_task(task: &mut TaskRecord) {
 }
 
 fn apply_revision_guard(task: &TaskRecord, if_revision: Option<u64>) -> Result<(), TkError> {
-    if let Some(expected) = if_revision {
-        if task.revision != expected {
-            return Err(TkError::with_details(
-                crate::error::ErrorCode::Conflict,
-                format!("task #{} revision conflict", task.id),
-                json!({
-                    "code": "revision_conflict",
-                    "task_id": task.id,
-                    "expected_revision": expected,
-                    "actual_revision": task.revision,
-                }),
-            ));
-        }
+    if let Some(expected) = if_revision
+        && task.revision != expected
+    {
+        return Err(TkError::with_details(
+            crate::error::ErrorCode::Conflict,
+            format!("task #{} revision conflict", task.id),
+            json!({
+                "code": "revision_conflict",
+                "task_id": task.id,
+                "expected_revision": expected,
+                "actual_revision": task.revision,
+            }),
+        ));
     }
     Ok(())
 }
@@ -633,29 +633,29 @@ impl ListStore {
         {
             let task = ensure_task_exists_mut(&mut after.tasks, task_id)?;
             apply_revision_guard(task, input.if_revision)?;
-            if let Some(subject) = input.subject {
-                if task.subject != subject {
-                    task.subject = subject;
-                    updated_fields.push("subject".to_owned());
-                }
+            if let Some(subject) = input.subject
+                && task.subject != subject
+            {
+                task.subject = subject;
+                updated_fields.push("subject".to_owned());
             }
-            if let Some(description) = input.description {
-                if task.description != description {
-                    task.description = description;
-                    updated_fields.push("description".to_owned());
-                }
+            if let Some(description) = input.description
+                && task.description != description
+            {
+                task.description = description;
+                updated_fields.push("description".to_owned());
             }
-            if let Some(active_form) = input.active_form {
-                if task.active_form.as_ref() != Some(&active_form) {
-                    task.active_form = Some(active_form);
-                    updated_fields.push("active_form".to_owned());
-                }
+            if let Some(active_form) = input.active_form
+                && task.active_form.as_ref() != Some(&active_form)
+            {
+                task.active_form = Some(active_form);
+                updated_fields.push("active_form".to_owned());
             }
-            if let Some(visibility) = input.visibility {
-                if task.visibility != visibility {
-                    task.visibility = visibility;
-                    updated_fields.push("visibility".to_owned());
-                }
+            if let Some(visibility) = input.visibility
+                && task.visibility != visibility
+            {
+                task.visibility = visibility;
+                updated_fields.push("visibility".to_owned());
             }
             if input.clear_owner && task.owner.is_some() {
                 task.owner = None;
@@ -677,10 +677,10 @@ impl ListStore {
                 }
                 updated_fields.push("metadata".to_owned());
             }
-            if let Some(status) = input.status {
-                if apply_status_update(task, status, input.force)? {
-                    updated_fields.push("status".to_owned());
-                }
+            if let Some(status) = input.status
+                && apply_status_update(task, status, input.force)?
+            {
+                updated_fields.push("status".to_owned());
             }
             if !updated_fields.is_empty() {
                 bump_task(task);

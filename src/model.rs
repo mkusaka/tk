@@ -235,13 +235,13 @@ pub fn validate_task_record(task: &TaskRecord) -> Result<(), TkError> {
             task.id
         )));
     }
-    if let Some(active_form) = &task.active_form {
-        if active_form.chars().count() > 120 {
-            return Err(TkError::validation(format!(
-                "task #{} active_form exceeds 120 characters",
-                task.id
-            )));
-        }
+    if let Some(active_form) = &task.active_form
+        && active_form.chars().count() > 120
+    {
+        return Err(TkError::validation(format!(
+            "task #{} active_form exceeds 120 characters",
+            task.id
+        )));
     }
     if let Some(owner) = &task.owner {
         validate_owner(owner)?;
