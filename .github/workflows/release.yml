@@ -3,6 +3,9 @@ on:
   push:
     tags:
       - "v*"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 permissions: {}
 jobs:
   verify:
@@ -92,6 +95,7 @@ jobs:
             --generate-notes
       - name: Compute source archive SHA256
         id: source_archive
+        shell: bash
         run: |
           SOURCE_ARCHIVE="tk-${VERSION}.tar.gz"
           SOURCE_URL="https://github.com/${GITHUB_REPOSITORY}/archive/refs/tags/${GITHUB_REF_NAME}.tar.gz"
@@ -178,6 +182,7 @@ jobs:
 
           cat "$FORMULA_PATH"
       - name: Build bottle
+        shell: bash
         env:
           FORMULA_NAME: ${{ needs.release.outputs.formula_name }}
           BOTTLE_TAG: ${{ matrix.bottle_tag }}
